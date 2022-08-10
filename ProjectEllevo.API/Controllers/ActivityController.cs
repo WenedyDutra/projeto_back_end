@@ -22,6 +22,7 @@ namespace ProjectEllevo.API.Controllers
             _mapper = mapper;
             _activityAppService = activityAppService;
         }
+        //listar todas as atividades
         [HttpGet("listActivity")]
         public ActionResult<List<ActivityModel>> Get()
         {
