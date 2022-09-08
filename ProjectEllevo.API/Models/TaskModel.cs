@@ -19,6 +19,5 @@ namespace ProjectEllevo.API.Models
         public string StatusDescription { get; set; }
         public ICollection<ActivityModel>? Activities { get; set; }
         public EStatus Status { get; set; }
-
     }
 }

@@ -21,9 +21,7 @@ namespace ProjectEllevo.API.Services
 
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
-
             _mapper = mapper;
-
             _task = database.GetCollection<TaskEntity>(settings.TaskCollectionName);
             _activity = database.GetCollection<ActivityEntity>(settings.TaskCollectionName);
 
@@ -31,19 +29,6 @@ namespace ProjectEllevo.API.Services
 
         public List<TaskEntity> GetAllTask() =>
             _task.Find(TaskEntity => true).ToList();
-
-        //public TaskEntity ListAllTask()
-        //{
-        //    var result = GetAllTask();
-        //    //var results = _mapper.Map<List<TaskModel>, List<TaskEntity>>(result);
-
-        //    foreach (var task in result)
-        //    {
-        //        task.StatusDescription = _userService.GetName(ObjectId.Parse(task.Responsible));
-        //        task.Generator = _userService.GetName(ObjectId.Parse(task.Generator));
-        //    }
-        //    return results;
-        //}
 
         public TaskEntity GetTaskId(ObjectId id) =>
             _task.Find<TaskEntity>(TaskEntity => TaskEntity.Id == id).FirstOrDefault();
@@ -57,9 +42,6 @@ namespace ProjectEllevo.API.Services
             task.Activities.Add((entity));
             UpdateTask(ObjectId.Parse(model.Id), task);
         }
-
-        //public ActivityEntity GetTaskId(ObjectId id) =>
-        //   _activity.Find<ActivityEntity>(ActivityEntity => ActivityEntity.Id == id).FirstOrDefault();
 
         public TaskEntity CreateTask(TaskEntity taskModel)
         {
@@ -77,7 +59,6 @@ namespace ProjectEllevo.API.Services
 
         public string GetStatusDescription(EStatus status)
         {
-
             switch (status)
             {
                 case EStatus.NaoIniciado:

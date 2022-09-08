@@ -17,10 +17,8 @@ namespace ProjectEllevo.API.Controllers
         private readonly TaskAppService _taskAppService;
         private readonly IMapper _mapper;
         private readonly UserAppService _userAppService;
-
         public TaskController(TaskAppService taskAppService, IMapper mapper, UserAppService userAppService)
         {
-
             _mapper = mapper;
             _taskAppService = taskAppService;
             _userAppService = userAppService;
@@ -31,7 +29,6 @@ namespace ProjectEllevo.API.Controllers
         {
             var result = _taskAppService.GetAllTask();
             var results = _mapper.Map<List<TaskEntity>, List<TaskModel>>(result);
-
             foreach (var task in results)
             {
                 task.StatusDescription = _userAppService.GetName(ObjectId.Parse(task.Responsible));
@@ -45,7 +42,6 @@ namespace ProjectEllevo.API.Controllers
         {
             var task = _taskAppService.GetTaskId(ObjectId.Parse(id));
             var results = _mapper.Map<TaskEntity, TaskModel>(task);
-           
             return Ok(results);
         }
 
@@ -54,9 +50,9 @@ namespace ProjectEllevo.API.Controllers
         {
             var results = _mapper.Map<TaskModel, TaskEntity>(task);
             _taskAppService.CreateTask(results);
-
             return Ok(new { message = "Tarefa criada com sucesso !" });
         }
+
         [HttpPut("updateTask")]
         public IActionResult Update([FromBody] TaskModel taskModel)
         {
@@ -64,7 +60,6 @@ namespace ProjectEllevo.API.Controllers
             taskModel.Generator = task.Generator;
             var model = _mapper.Map(taskModel, task);
             _taskAppService.UpdateTask(ObjectId.Parse(taskModel.Id), model);
-
             return Ok(new { message = "Usuário atualizado com sucesso !" });
         }
 
@@ -80,7 +75,6 @@ namespace ProjectEllevo.API.Controllers
         public IActionResult CreateActivity([FromBody] ActivityModel activityModel)
         {
             _taskAppService.CreateActivity(activityModel);
-
             return Ok(new { message = "Usuário atualizado com sucesso !" });
         }
     }

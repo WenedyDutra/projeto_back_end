@@ -13,8 +13,7 @@ namespace ProjectEllevo.API.Models
         public string TaskCollectionName { get; set; }
     }
         public interface ImongoDbdatabaseSettings 
-
-    {
+        {
         public string UserCollectionName { get; set; }
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }

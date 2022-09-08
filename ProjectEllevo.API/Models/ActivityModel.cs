@@ -11,6 +11,5 @@ namespace ProjectEllevo.API.Models
         public string ActivityId { get; set; }
         public string ActivityTitle { get; set; }
         public string ActivityDescription { get; set; }
-
     }
 }
