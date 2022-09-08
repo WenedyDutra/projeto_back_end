@@ -10,8 +10,9 @@ namespace ProjectEllevo.API.Entitiy
     public class ActivityEntity
     {
         [BsonId]
-        public ObjectId Id{ get; set; }
-        public string Title { get; set; }
-        public string TaskId { get; set; }
+        public ObjectId TaskId { get; set; }
+        public ObjectId ActivityId { get; set; }
+        public string ActivityTitle { get; set; }
+        public string ActivityDescription { get; set; }
     }
 }

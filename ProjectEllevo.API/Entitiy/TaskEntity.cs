@@ -11,6 +11,9 @@ namespace ProjectEllevo.API.Entitiy
         public string Generator { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string? Responsible { get; set; }
+        public string Responsible { get; set; }
+        public string Status { get; set; }
+        public ICollection<ActivityEntity>? Activities { get; set; }
+
     }
 }

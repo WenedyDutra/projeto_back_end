@@ -25,49 +25,34 @@ namespace ProjectEllevo.API.Controllers
         [HttpPost]
         [Route("authenticate")]
         [AllowAnonymous]
-        public ActionResult Authenticate([FromBody] UserModel model)
+        public ActionResult<UserModel> Authenticate([FromBody] UserModel model)
         {
-            var user = TokenAppService.GenerateToken(model.UserName, model.Password);
-            if (user == null)
+            var login = _userService.GetLogin(model.UserName, model.Password);
+            var logins = _mapper.Map<UserEntity, UserModel>(login);
+            if (logins == null)
             {
                 return NotFound(new { message = "Usuário ou senha inválidos" });
             }
-            //var token = TokenServiceAppService.GenerateToken(user);
-            return Ok(new { user });
+            var token = TokenAppService.GenerateToken(model.UserName, model.Password);
+            var models = _mapper.Map<UserModel, UserEntity>(model);
+            models = _userService.GetUserByName(models.UserName);
+            var results = _mapper.Map<UserEntity, UserModel>(models);
+            return Ok(new { message = "Usuário logado com sucesso !" , token, results.Id, results
+            .Name});
         }
-        //[AllowAnonymous]
-        //[Route("authenticate")]
-        //[HttpPost]
-        //public ActionResult Login([FromBody] UserModel userModel)
-        //{
-        //    var token = _userService.Authenticate(userModel.UserName, userModel.Password);
-
-        //    if (token == null)
-        //    {
-        //        return Unauthorized();
-        //    }
-        //    return Ok(new { token, userModel });
-        //}
 
         [HttpGet("listUser")]
         public ActionResult<List<UserModel>> Get()
         {
             var result = _userService.GetAllUser();
-
-            return Ok(new { result });
+            var results = _mapper.Map<List<UserEntity>, List<UserModel>>(result);
+            return Ok( results );
         }
 
-        //[HttpGet("getUser/{id:length(24)}", Name = "GetUser")]
         [HttpGet("getUserId/{id:length(24)}")]
         public ActionResult<UserModel> Get(string id)
         {
             var user = _userService.GetId(ObjectId.Parse(id));
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
             return Ok(new { user });
         }
 
@@ -76,52 +61,25 @@ namespace ProjectEllevo.API.Controllers
         {
             _userService.Create(user);
 
-            return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
+            return Ok (new { message = "Usuário criado com sucesso !" });
         }
 
-        //[HttpPut("{id:length(24)}")]
-        [HttpPut("update{id:length(24)}")]
-        public IActionResult Update(string id, [FromBody] UserModel userIn)
+        [HttpPut("updateUser")]
+        public IActionResult Update([FromBody] UserModel userIn)
         {
-            var user = _userService.GetId(ObjectId.Parse(id));
-
-            if (user == null)
-            {
-                return NotFound();
-            }
+            var user = _userService.GetId(ObjectId.Parse(userIn.Id));
             var model = _mapper.Map(userIn, user);
-            _userService.Update(ObjectId.Parse(id), model);
-
-            return NoContent();
+            _userService.Update(ObjectId.Parse(userIn.Id), model);
+            return Ok(new { message = "Usuário atualizado com sucesso !" });
         }
 
-        //[HttpDelete("{id:length(24)}")]
-        [HttpDelete("delete{id:length(24)}")]
+        [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
             var user = _userService.GetId(ObjectId.Parse(id));
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
             _userService.Remove(ObjectId.Parse(id));
-
-            return NoContent();
+            return Ok(new { message = "Usuário excluido com sucesso !" });
         }
-        //[AllowAnonymous]
-        //[Route("authenticate")]
-        //[HttpPost]
-        //public ActionResult Login([FromBody] UserModel userModel)
-        //{
-        //    var token = _userService.Authenticate(userModel.UserName, userModel.Password);
-
-        //    if (token == null)
-        //    {
-        //        return Unauthorized();
-        //    }
-        //    return Ok(new { token, userModel });
-        //}
+       
     }
 }

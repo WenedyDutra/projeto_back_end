@@ -16,7 +16,7 @@ namespace ProjectEllevo.API.Services
         //public readonly IUserService UserService {get; set;}
         private readonly IMongoCollection<UserEntity> _user;
         //private readonly string key;
-        public UserAppService(ImongoDbdatabaseSettings settings, IConfiguration configuration)
+         public UserAppService(ImongoDbdatabaseSettings settings, IConfiguration configuration)
         {
 
             var client = new MongoClient(settings.ConnectionString);
@@ -34,7 +34,16 @@ namespace ProjectEllevo.API.Services
 
         public UserEntity GetId(ObjectId id) =>
             _user.Find<UserEntity>(UserEntity => UserEntity.Id == id).FirstOrDefault();
-        
+
+        public UserEntity GetUserByName(string userName) =>
+            _user.Find<UserEntity>(LoginEntity => LoginEntity.UserName == userName).FirstOrDefault();
+        //public UserEntity GetUserByPassword(string password) =>
+        //    _user.Find<UserEntity>(LoginEntity => LoginEntity.UserName == userName).FirstOrDefault();
+
+        public string GetName(ObjectId userId)
+        {
+            return GetId(userId).Name;
+        }
 
         public UserEntity Create(UserEntity UserModel)
         {
@@ -49,34 +58,5 @@ namespace ProjectEllevo.API.Services
 
         public void Remove(ObjectId id) =>
             _user.DeleteOne(UserEntity => UserEntity.Id == id);
-
-        //public string Authenticate(string userName, string password)
-        //{
-        //    var user = this._user.Find(x => x.UserName == userName && x.Password == password).FirstOrDefault();
-        //    if (user == null)
-        //    {
-        //        return null;
-        //    }
-        //    var tokenHandler = new JwtSecurityTokenHandler();
-        //    var tokenKey = Encoding.ASCII.GetBytes(key);
-        //    var tokenDescriptor = new SecurityTokenDescriptor()
-        //    {
-        //        Subject = new ClaimsIdentity(new Claim[] {
-        //            new Claim(ClaimTypes.Name, userName),
-        //        }),
-
-
-
-        //        SigningCredentials = new SigningCredentials(
-        //            new SymmetricSecurityKey(tokenKey),
-        //            SecurityAlgorithms.HmacSha256Signature
-        //            )
-        //    };
-
-        //    var token = tokenHandler.CreateToken(tokenDescriptor);
-
-        //    return tokenHandler.WriteToken(token);
-        //}
-
     }
 }

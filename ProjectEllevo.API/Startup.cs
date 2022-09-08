@@ -10,6 +10,7 @@ using ProjectEllevo.API.Mappings;
 using ProjectEllevo.API.Models;
 using ProjectEllevo.API.Services;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ProjectEllevo.API
 {
@@ -35,7 +36,13 @@ namespace ProjectEllevo.API
 
             //services.AddSingleton<UserAppService>();
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+
+            {
+
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
+            });
 
             services.AddCors(options =>
             {
@@ -47,7 +54,7 @@ namespace ProjectEllevo.API
             });
             services.AddTransient<UserAppService>();
             services.AddTransient<TaskAppService>();
-            services.AddTransient<ActivityAppService>();
+
 
 
             services.AddAuthentication(x =>

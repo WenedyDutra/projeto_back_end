@@ -16,74 +16,72 @@ namespace ProjectEllevo.API.Controllers
     {
         private readonly TaskAppService _taskAppService;
         private readonly IMapper _mapper;
+        private readonly UserAppService _userAppService;
 
-        public TaskController(TaskAppService taskAppService, IMapper mapper)
+        public TaskController(TaskAppService taskAppService, IMapper mapper, UserAppService userAppService)
         {
+
             _mapper = mapper;
             _taskAppService = taskAppService;
+            _userAppService = userAppService;
         }
 
         [HttpGet("lisTask")]
         public ActionResult<List<TaskModel>> GetTask()
         {
             var result = _taskAppService.GetAllTask();
+            var results = _mapper.Map<List<TaskEntity>, List<TaskModel>>(result);
 
-            //_mapper.Map<TaskEntity, TaskModel>(result);
-
-            //return NoContent();
-            return Ok(new { result });
+            foreach (var task in results)
+            {
+                task.StatusDescription = _userAppService.GetName(ObjectId.Parse(task.Responsible));
+                task.Generator = _userAppService.GetName(ObjectId.Parse(task.Generator));
+            }
+            return Ok(results);
         }
 
         [HttpGet("{id:length(24)}")]
-        public ActionResult<TaskModel> GetId(ObjectId id)
+        public ActionResult<TaskModel> GetId(string id)
         {
-            var user = _taskAppService.GetTaskId(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(new { user });
+            var task = _taskAppService.GetTaskId(ObjectId.Parse(id));
+            var results = _mapper.Map<TaskEntity, TaskModel>(task);
+           
+            return Ok(results);
         }
 
-        [HttpPost("")]
-        public ActionResult<TaskModel> CreateTask(TaskEntity task)
+        [HttpPost("createTask")]
+        public ActionResult<TaskModel> CreateTask(TaskModel task)
         {
-            _taskAppService.CreateTask(task);
+            var results = _mapper.Map<TaskModel, TaskEntity>(task);
+            _taskAppService.CreateTask(results);
 
-            return CreatedAtRoute("GetTask", new { id = task.Id.ToString() }, task);
+            return Ok(new { message = "Tarefa criada com sucesso !" });
         }
-
-        [HttpPut("{id:length(24)}")]
-        public IActionResult UpdateTask(string id, [FromBody] TaskModel taskModel)
+        [HttpPut("updateTask")]
+        public IActionResult Update([FromBody] TaskModel taskModel)
         {
-            var user = _taskAppService.GetTaskId(ObjectId.Parse(id));
+            var task = _taskAppService.GetTaskId(ObjectId.Parse(taskModel.Id));
+            taskModel.Generator = task.Generator;
+            var model = _mapper.Map(taskModel, task);
+            _taskAppService.UpdateTask(ObjectId.Parse(taskModel.Id), model);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-            var model = _mapper.Map(taskModel, user);
-            _taskAppService.UpdateTask(ObjectId.Parse(id), model);
-
-            return NoContent();
+            return Ok(new { message = "Usuário atualizado com sucesso !" });
         }
 
         [HttpDelete("{id:length(24)}")]
         public IActionResult DeleteTask(string id)
         {
             var user = _taskAppService.GetTaskId(ObjectId.Parse(id));
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
             _taskAppService.RemoveTask(ObjectId.Parse(id));
-
-            return NoContent();
+            return Ok(new { message = "Usuário excluído com sucesso !" });
         }
 
+        [HttpPut("createActivity")]
+        public IActionResult CreateActivity([FromBody] ActivityModel activityModel)
+        {
+            _taskAppService.CreateActivity(activityModel);
+
+            return Ok(new { message = "Usuário atualizado com sucesso !" });
+        }
     }
 }

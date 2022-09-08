@@ -7,8 +7,10 @@ namespace ProjectEllevo.API.Models
 {
     public class ActivityModel
     {
-        public string Id { get; set; }
-        public string Title { get; set; }
         public string TaskId { get; set; }
+        public string ActivityId { get; set; }
+        public string ActivityTitle { get; set; }
+        public string ActivityDescription { get; set; }
+
     }
 }
