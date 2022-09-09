@@ -25,7 +25,7 @@ namespace ProjectEllevo.API.Controllers
         [HttpPost]
         [Route("authenticate")]
         [AllowAnonymous]
-        public ActionResult<UserModel> Authenticate([FromBody] UserModel model)
+        public ActionResult<ReturnLoginModel> Authenticate([FromBody] UserModel model)
         {
             var login = _userService.GetLogin(model.UserName, model.Password);
             var logins = _mapper.Map<UserEntity, UserModel>(login);
@@ -36,8 +36,12 @@ namespace ProjectEllevo.API.Controllers
             var token = TokenAppService.GenerateToken(model.UserName, model.Password);
             _userService.GetUserByName(model.UserName);
             var results = _mapper.Map<UserModel, UserModel>(model);
-            return Ok(new { message = "Usuário logado com sucesso !" , token, results.Id, results
-            .Name});
+            return Ok(new ReturnLoginModel
+            {
+                Id = logins.Id,
+                Name = results.UserName,
+                Token = token
+            });
         }
 
         [HttpGet("listUser")]
@@ -53,7 +57,7 @@ namespace ProjectEllevo.API.Controllers
         {
             var user = _userService.GetId(ObjectId.Parse(id));
             var users = _mapper.Map<UserEntity, UserModel>(user);
-            return Ok(new { users });
+            return Ok(users);
         }
 
         [HttpPost("createUser")]
@@ -61,7 +65,7 @@ namespace ProjectEllevo.API.Controllers
         {
             var users = _mapper.Map<UserModel, UserEntity>(user);
             _userService.Create(users);
-            return Ok (new { message = "Usuário criado com sucesso !" });
+            return Ok();
         }
 
         [HttpPut("updateUser")]
@@ -70,14 +74,14 @@ namespace ProjectEllevo.API.Controllers
             var user = _userService.GetId(ObjectId.Parse(userIn.Id));
             var model = _mapper.Map(userIn, user);
             _userService.Update(ObjectId.Parse(userIn.Id), model);
-            return Ok(new { message = "Usuário atualizado com sucesso !" });
+            return Ok();
         }
 
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
             _userService.Remove(ObjectId.Parse(id));
-            return Ok(new { message = "Usuário excluido com sucesso !" });
+            return Ok();
         }
        
     }

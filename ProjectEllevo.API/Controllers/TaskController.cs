@@ -50,7 +50,7 @@ namespace ProjectEllevo.API.Controllers
         {
             var results = _mapper.Map<TaskModel, TaskEntity>(task);
             _taskAppService.CreateTask(results);
-            return Ok(new { message = "Tarefa criada com sucesso !" });
+            return Ok();
         }
 
         [HttpPut("updateTask")]
@@ -60,22 +60,22 @@ namespace ProjectEllevo.API.Controllers
             taskModel.Generator = task.Generator;
             var model = _mapper.Map(taskModel, task);
             _taskAppService.UpdateTask(ObjectId.Parse(taskModel.Id), model);
-            return Ok(new { message = "Usuário atualizado com sucesso !" });
+            return Ok();
         }
 
         [HttpDelete("{id:length(24)}")]
         public IActionResult DeleteTask(string id)
         {
-            var user = _taskAppService.GetTaskId(ObjectId.Parse(id));
+             _taskAppService.GetTaskId(ObjectId.Parse(id));
             _taskAppService.RemoveTask(ObjectId.Parse(id));
-            return Ok(new { message = "Usuário excluído com sucesso !" });
+            return Ok();
         }
 
         [HttpPut("createActivity")]
         public IActionResult CreateActivity([FromBody] ActivityModel activityModel)
         {
             _taskAppService.CreateActivity(activityModel);
-            return Ok(new { message = "Usuário atualizado com sucesso !" });
+            return Ok();
         }
     }
 }
