@@ -13,6 +13,6 @@ namespace ProjectEllevo.API.Entitiy
         public string Description { get; set; }
         public string Responsible { get; set; }
         public string Status { get; set; }
-        public ICollection<ActivityEntity>? Activities { get; set; }
+        public ICollection<ActivityEntity> Activities { get; set; }
     }
 }

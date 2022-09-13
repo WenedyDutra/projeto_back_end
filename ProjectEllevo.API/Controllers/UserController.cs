@@ -31,7 +31,7 @@ namespace ProjectEllevo.API.Controllers
             var logins = _mapper.Map<UserEntity, UserModel>(login);
             if (logins == null)
             {
-                return NotFound(new { message = "Usuário ou senha inválidos" });
+                return NotFound( "Usuário ou senha inválidos" );
             }
             var token = TokenAppService.GenerateToken(model.UserName, model.Password);
             _userService.GetUserByName(model.UserName);

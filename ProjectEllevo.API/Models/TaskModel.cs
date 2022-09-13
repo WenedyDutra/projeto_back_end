@@ -17,7 +17,7 @@ namespace ProjectEllevo.API.Models
         public string Responsible { get; set; }
         public string ResponsibleName { get; set; }
         public string StatusDescription { get; set; }
-        public ICollection<ActivityModel>? Activities { get; set; }
+        public ICollection<ActivityModel> Activities { get; set; }
         public EStatus Status { get; set; }
     }
 }
